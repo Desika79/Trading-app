@@ -277,15 +277,21 @@ async def run_live_monitoring():
 def run_api_server():
     """Run the enhanced FastAPI server"""
     import uvicorn
+    import os
+    
+    # Use environment PORT if available (for deployment platforms)
+    port = int(os.getenv("PORT", settings.API_PORT))
     
     logger.info("🚀 Starting Enhanced AI Signal Engine API Server...")
+    logger.info(f"Server will run on host: {settings.API_HOST}, port: {port}")
+    
     uvicorn.run(
         "src.api.enhanced_main:app",
         host=settings.API_HOST,
-        port=settings.API_PORT,
-        workers=settings.API_WORKERS,
+        port=port,
+        workers=1 if os.getenv("RAILWAY_ENVIRONMENT") else settings.API_WORKERS,
         log_level=settings.LOG_LEVEL.lower(),
-        reload=True
+        reload=False  # Disable reload in production
     )
 
 

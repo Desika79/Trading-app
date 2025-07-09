@@ -1,0 +1,35 @@
+services:
+  - type: web
+    name: ai-trading-system
+    env: python
+    region: oregon
+    plan: starter
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "python start.py"
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11"
+      - key: API_HOST
+        value: "0.0.0.0"
+      - key: API_PORT
+        value: "10000"
+      - key: LOG_LEVEL
+        value: "INFO"
+      - key: MIN_WIN_RATE
+        value: "0.80"
+    scaling:
+      minInstances: 1
+      maxInstances: 3
+    healthCheckPath: "/health"
+    
+  - type: redis
+    name: ai-trading-redis
+    plan: starter
+    region: oregon
+    
+databases:
+  - name: ai-trading-db
+    databaseName: trading_system
+    user: trading_user
+    region: oregon
+    plan: starter
